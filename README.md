@@ -59,7 +59,7 @@ cloud deployments, and Terraform modules.
 
 ## Architecture
 
-![Architecture diagram](docs/assets/architecture-diagram.svg)
+![Architecture diagram](architecture-diagram.svg)
 
 ```
 Client (Next.js / curl)

@@ -1,0 +1,120 @@
+<svg viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono', monospace">
+  <defs>
+    <style>
+      .bg { fill: #11141B; }
+      .panel { fill: #1A2330; stroke: #2A2F3D; stroke-width: 1; }
+      .panel-alt { fill: #1E2A2E; stroke: #2A2F3D; stroke-width: 1; }
+      .hairline { stroke: #2A2F3D; stroke-width: 1; }
+      .title { fill: #EDEFF4; font-size: 22px; font-weight: 700; }
+      .subtitle { fill: #8B92A6; font-size: 12px; }
+      .label { fill: #EDEFF4; font-size: 13px; font-weight: 600; }
+      .sublabel { fill: #8B92A6; font-size: 10px; }
+      .arrow { stroke: #5BA8FF; stroke-width: 1.5; fill: none; marker-end: url(#arrowhead); }
+      .arrow-muted { stroke: #3A4154; stroke-width: 1.2; fill: none; marker-end: url(#arrowhead-muted); }
+    </style>
+    <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#5BA8FF" />
+    </marker>
+    <marker id="arrowhead-muted" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#3A4154" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="760" />
+  <text x="40" y="40" class="title">Hybrid Recommendation Engine — Architecture</text>
+  <text x="40" y="60" class="subtitle">Client → API → Hybrid Engine (7 weighted components) → Cache/Storage</text>
+
+  <!-- Clients -->
+  <rect class="panel" x="40" y="90" width="200" height="70" rx="8" />
+  <text x="60" y="118" class="label">Next.js Frontend</text>
+  <text x="60" y="135" class="sublabel">Home · Explore · Trending · Profile</text>
+
+  <rect class="panel" x="40" y="180" width="200" height="50" rx="8" />
+  <text x="60" y="208" class="label">External clients (curl / SDKs)</text>
+
+  <!-- API gateway -->
+  <rect class="panel" x="320" y="90" width="240" height="140" rx="8" />
+  <text x="340" y="118" class="label">FastAPI Backend</text>
+  <text x="340" y="136" class="sublabel">/recommend  /trending  /similar</text>
+  <text x="340" y="150" class="sublabel">/explain  /feedback  /profile</text>
+  <text x="340" y="164" class="sublabel">/search  /auth/token  /metrics</text>
+  <text x="340" y="182" class="sublabel">JWT auth · rate limit · CORS</text>
+  <text x="340" y="200" class="sublabel">Redis cache (TTL) · BackgroundTasks</text>
+
+  <path class="arrow" d="M240,125 L320,140" />
+  <path class="arrow" d="M240,205 L320,170" />
+
+  <!-- Hybrid Engine -->
+  <rect class="panel-alt" x="640" y="60" width="520" height="280" rx="10" />
+  <text x="660" y="88" class="label">recsys.hybrid.HybridRecommender</text>
+  <text x="660" y="104" class="sublabel">min-max normalize → weighted sum → popularity correction → rank</text>
+
+  <!-- 7 components as colored chips -->
+  <!-- collaborative -->
+  <rect x="660" y="120" width="150" height="34" rx="6" fill="#5BA8FF22" stroke="#5BA8FF" />
+  <text x="672" y="142" fill="#5BA8FF" font-size="12" font-weight="700">Collaborative</text>
+  <!-- content -->
+  <rect x="820" y="120" width="150" height="34" rx="6" fill="#FFB45422" stroke="#FFB454" />
+  <text x="832" y="142" fill="#FFB454" font-size="12" font-weight="700">Content (TF-IDF)</text>
+  <!-- kg -->
+  <rect x="980" y="120" width="160" height="34" rx="6" fill="#C792EA22" stroke="#C792EA" />
+  <text x="992" y="142" fill="#C792EA" font-size="12" font-weight="700">Knowledge Graph</text>
+
+  <!-- deep -->
+  <rect x="660" y="164" width="150" height="34" rx="6" fill="#FF6B8122" stroke="#FF6B81" />
+  <text x="672" y="186" fill="#FF6B81" font-size="12" font-weight="700">Deep (NCF/W&amp;D/AE)</text>
+  <!-- session -->
+  <rect x="820" y="164" width="150" height="34" rx="6" fill="#4FD1C522" stroke="#4FD1C5" />
+  <text x="832" y="186" fill="#4FD1C5" font-size="12" font-weight="700">Session (Markov/Tfmr)</text>
+  <!-- trending -->
+  <rect x="980" y="164" width="160" height="34" rx="6" fill="#F2D94E22" stroke="#F2D94E" />
+  <text x="992" y="186" fill="#F2D94E" font-size="12" font-weight="700">Trending (decay)</text>
+
+  <!-- RL -->
+  <rect x="660" y="208" width="150" height="34" rx="6" fill="#84CC1622" stroke="#84CC16" />
+  <text x="672" y="230" fill="#84CC16" font-size="12" font-weight="700">RL Feedback (LinUCB)</text>
+
+  <text x="660" y="270" class="sublabel">Output: recsys.types.Recommendation</text>
+  <text x="660" y="286" class="sublabel">{ item_id, final_score, component_scores, rank }</text>
+  <text x="660" y="306" class="sublabel">→ recsys.explain.Explainer → ExplanationCard</text>
+
+  <path class="arrow" d="M560,160 L660,180" />
+
+  <!-- Data layer -->
+  <rect class="panel" x="40" y="400" width="280" height="100" rx="8" />
+  <text x="60" y="428" class="label">recsys.data.DataStore</text>
+  <text x="60" y="446" class="sublabel">In-memory interactions + item catalog</text>
+  <text x="60" y="462" class="sublabel">Loaders: MovieLens, generic CSV</text>
+  <text x="60" y="478" class="sublabel">→ Postgres + feature store in production</text>
+
+  <path class="arrow-muted" d="M320,440 L660,250" />
+
+  <!-- Cache -->
+  <rect class="panel" x="360" y="400" width="200" height="80" rx="8" />
+  <text x="380" y="428" class="label">Redis Cache</text>
+  <text x="380" y="446" class="sublabel">recommend/trending TTL cache</text>
+  <text x="380" y="462" class="sublabel">in-memory fallback if unreachable</text>
+
+  <path class="arrow-muted" d="M460,170 L460,400" />
+
+  <!-- MLOps -->
+  <rect class="panel-alt" x="40" y="540" width="500" height="160" rx="8" />
+  <text x="60" y="568" class="label">MLOps</text>
+  <text x="60" y="588" class="sublabel">scripts/train.py → fits all components → MLflow run (params/metrics/artifact)</text>
+  <text x="60" y="604" class="sublabel">scripts/evaluate.py → Precision@K, Recall@K, MAP, NDCG, CTR comparison table</text>
+  <text x="60" y="620" class="sublabel">research/benchmarks/optimize_weights.py → Optuna Bayesian search over hybrid weights</text>
+  <text x="60" y="636" class="sublabel">research/ab_testing/framework.py → variant bucketing + significance testing</text>
+  <text x="60" y="652" class="sublabel">DVC → data/.dvc versioning · W&amp;B → optional run mirroring</text>
+  <text x="60" y="668" class="sublabel">.github/workflows/retrain.yml → weekly scheduled retraining (GitHub Actions)</text>
+
+  <!-- Monitoring -->
+  <rect class="panel-alt" x="580" y="540" width="580" height="160" rx="8" />
+  <text x="600" y="568" class="label">Monitoring</text>
+  <text x="600" y="588" class="sublabel">/metrics (Prometheus client) → request rate, latency histograms, feedback counters</text>
+  <text x="600" y="604" class="sublabel">Prometheus scrapes backend:8000/metrics every 15s</text>
+  <text x="600" y="620" class="sublabel">Grafana dashboards: API Overview (latency/errors), Model Quality (offline gauges)</text>
+  <text x="600" y="636" class="sublabel">Drift detection: recsys.utils.PreferenceDriftDetector (per-user, JS divergence)</text>
+
+  <path class="arrow-muted" d="M560,200 L900,540" />
+  <path class="arrow-muted" d="M300,400 L300,540" />
+</svg>
